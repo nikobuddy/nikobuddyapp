@@ -229,7 +229,7 @@ class _HomePageState extends State<HomePage> {
           const CircleAvatar(
             radius: 60,
             backgroundImage: NetworkImage(
-                'https://example.com/profile-picture'), // Replace with your own image
+                'https://pbs.twimg.com/profile_images/1129666690529128448/06XvLVCt_400x400.png'), // Replace with your own image
           ),
           const SizedBox(height: 16),
           const Text(
