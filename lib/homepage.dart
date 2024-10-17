@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   late PageController _pageController;
+  bool isDarkMode = false;
 
   @override
   void initState() {
@@ -26,63 +27,76 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nikobuddy'),
-        backgroundColor: Colors.yellow[700],
-      ),
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (index) {
-          setState(() => _currentIndex = index);
-        },
-        children: <Widget>[
-          _buildHomePage(),
-          _buildBlogsPage(),
-          _buildProjectsPage(),
-          _buildFarmPage(), // Updated farm page
-          Container(color: Colors.white, child: Center(child: Text('Profile Page'))),
-        ],
-      ),
-      bottomNavigationBar: BottomNavyBar(
-        selectedIndex: _currentIndex,
-        showElevation: true,
-        onItemSelected: (index) {
-          setState(() => _currentIndex = index);
-          _pageController.jumpToPage(index);
-        },
-        items: [
-          BottomNavyBarItem(
-            icon: Icon(Icons.home_filled, size: 30),
-            title: const Text('Home'),
-            activeColor: Colors.deepPurpleAccent,
-            inactiveColor: Colors.grey,
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.article, size: 30),
-            title: const Text('Blogs'),
-            activeColor: Colors.orangeAccent,
-            inactiveColor: Colors.grey,
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.work, size: 30),
-            title: const Text('Projects'),
-            activeColor: Colors.blueAccent,
-            inactiveColor: Colors.grey,
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.agriculture, size: 30),
-            title: const Text('Farm'),
-            activeColor: Colors.greenAccent,
-            inactiveColor: Colors.grey,
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.person, size: 30),
-            title: const Text('Profile'),
-            activeColor: Colors.redAccent,
-            inactiveColor: Colors.grey,
-          ),
-        ],
+    return MaterialApp(
+      theme: isDarkMode ? ThemeData.dark() : ThemeData.light(),
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Nikobuddy'),
+          backgroundColor: Colors.yellow[700],
+          actions: [
+            IconButton(
+              icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
+              onPressed: () {
+                setState(() {
+                  isDarkMode = !isDarkMode;
+                });
+              },
+            ),
+          ],
+        ),
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() => _currentIndex = index);
+          },
+          children: <Widget>[
+            _buildHomePage(),
+            _buildBlogsPage(),
+            _buildProjectsPage(),
+            _buildFarmPage(),
+            _buildProfilePage(), // Updated profile page
+          ],
+        ),
+        bottomNavigationBar: BottomNavyBar(
+          selectedIndex: _currentIndex,
+          showElevation: true,
+          onItemSelected: (index) {
+            setState(() => _currentIndex = index);
+            _pageController.jumpToPage(index);
+          },
+          items: [
+            BottomNavyBarItem(
+              icon: const Icon(Icons.home_filled, size: 30),
+              title: const Text('Home'),
+              activeColor: Colors.deepPurpleAccent,
+              inactiveColor: Colors.grey,
+            ),
+            BottomNavyBarItem(
+              icon: const Icon(Icons.article, size: 30),
+              title: const Text('Blogs'),
+              activeColor: Colors.orangeAccent,
+              inactiveColor: Colors.grey,
+            ),
+            BottomNavyBarItem(
+              icon: const Icon(Icons.work, size: 30),
+              title: const Text('Projects'),
+              activeColor: Colors.blueAccent,
+              inactiveColor: Colors.grey,
+            ),
+            BottomNavyBarItem(
+              icon: const Icon(Icons.agriculture, size: 30),
+              title: const Text('Farm'),
+              activeColor: Colors.greenAccent,
+              inactiveColor: Colors.grey,
+            ),
+            BottomNavyBarItem(
+              icon: const Icon(Icons.person, size: 30),
+              title: const Text('Profile'),
+              activeColor: Colors.redAccent,
+              inactiveColor: Colors.grey,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -94,7 +108,6 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Greeting Section
             Container(
               padding: const EdgeInsets.all(20),
               margin: const EdgeInsets.only(bottom: 20),
@@ -129,24 +142,19 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-
-            // Blog Section
             const Text(
               'Latest Blogs',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            _buildBlogList(), // Horizontal blog list
-
-            const SizedBox(height: 20), // Spacing between sections
-
-            // Projects Section
+            _buildBlogList(),
+            const SizedBox(height: 20),
             const Text(
               'Recent Projects',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            _buildProjectList(), // Horizontal project list
+            _buildProjectList(),
           ],
         ),
       ),
@@ -164,7 +172,7 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
-          _buildBlogList(vertical: true), // Vertical blog list
+          _buildBlogList(vertical: true),
         ],
       ),
     );
@@ -181,7 +189,7 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10),
-          _buildProjectList(vertical: true), // Vertical project list
+          _buildProjectList(vertical: true),
         ],
       ),
     );
@@ -198,105 +206,84 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
-          
-          // Temperature Card
           _buildFarmDetailCard('Temperature', '22°C', Icons.thermostat),
           const SizedBox(height: 16),
-
-          // Moisture Card
           _buildFarmDetailCard('Moisture', '45%', Icons.water),
           const SizedBox(height: 16),
-
-          // Humidity Card
           _buildFarmDetailCard('Humidity', '60%', Icons.opacity),
           const SizedBox(height: 16),
-
-          // Additional farming metrics can be added here
           _buildFarmDetailCard('Light Intensity', '300 Lux', Icons.wb_sunny),
           const SizedBox(height: 16),
-
-          // Switch for Automation
           _buildSwitchCard('Automation', 'Enable/Disable automation features'),
         ],
       ),
     );
   }
 
-  Widget _buildFarmDetailCard(String title, String value, IconData icon) {
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Icon(icon, size: 40, color: Colors.green),
-                const SizedBox(width: 16),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      value,
-                      style: const TextStyle(fontSize: 16, color: Colors.black54),
-                    ),
-                  ],
-                ),
-              ],
+  Widget _buildProfilePage() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const CircleAvatar(
+            radius: 60,
+            backgroundImage: NetworkImage(
+                'https://example.com/profile-picture'), // Replace with your own image
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'John Doe',
+            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Mobile Developer',
+            style: TextStyle(fontSize: 18, color: Colors.grey),
+          ),
+          const SizedBox(height: 20),
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: ListTile(
+              leading: const Icon(Icons.email, color: Colors.redAccent),
+              title: const Text('john.doe@example.com'),
             ),
-            const Icon(Icons.arrow_forward_ios, color: Colors.grey),
-          ],
-        ),
-      ),
-    );
-  }
+          ),
+          const SizedBox(height: 10),
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: ListTile(
+              leading: const Icon(Icons.phone, color: Colors.green),
+              title: const Text('+123 456 7890'),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: ListTile(
+              leading: const Icon(Icons.location_on, color: Colors.blue),
+              title: const Text('123, Your City, Country'),
+            ),
+          ),
+          const SizedBox(height: 30),
+          ElevatedButton.icon(
+  onPressed: () {
+    setState(() {
+      isDarkMode = !isDarkMode;
+    });
+  },
+  icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode),
+  label: Text(isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'),
+  style: ElevatedButton.styleFrom(
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+    backgroundColor: isDarkMode ? Colors.grey[800] : Colors.blue, // Use backgroundColor instead of primary
+  ),
+),
 
-  Widget _buildSwitchCard(String title, String description) {
-    bool isSwitched = false;
-
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  description,
-                  style: const TextStyle(fontSize: 16, color: Colors.black54),
-                ),
-              ],
-            ),
-            Switch(
-              value: isSwitched,
-              onChanged: (value) {
-                setState(() {
-                  isSwitched = value;
-                });
-              },
-              activeTrackColor: Colors.green,
-              activeColor: Colors.white,
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -308,15 +295,13 @@ class _HomePageState extends State<HomePage> {
               _buildBlogCard(
                 title: 'Understanding Flutter Widgets',
                 description: 'A deep dive into Flutter widgets.',
-                imageUrl: 'https://yt3.googleusercontent.com/R7PTqrMUbUEYEJ4eYubESlWPcZnAqTcqfXTt-NU4S2F9M-kEcB39JSHW50JpMs6Hjy1WEVDX8w=s900-c-k-c0x00ffffff-no-rj',
+                imageUrl: 'https://yt3.googleusercontent.com/R7PTqrMUbUEYEJ4eYubESlWPcZnAqTcqfXTt-NU4S2F9M-kEcB39JSHW50JpMs6Hjy1WEVDX8g=s900-c-k-c0x00ffffff-no-rj',
               ),
-              const SizedBox(height: 16),
               _buildBlogCard(
-                title: 'State Management in Flutter',
-                description: 'Different approaches to state management.',
-                imageUrl: 'https://yt3.googleusercontent.com/R7PTqrMUbUEYEJ4eYubESlWPcZnAqTcqfXTt-NU4S2F9M-kEcB39JSHW50JpMs6Hjy1WEVDX8w=s900-c-k-c0x00ffffff-no-rj',
+                title: 'Dart Language Features',
+                description: 'Explore advanced features in Dart.',
+                imageUrl: 'https://yt3.googleusercontent.com/ytc/AGIKgqN6xqM7ivEMD7Wl7EqgOwgp0uc4zwoFSaE73tXJRw=s900-c-k-c0x00ffffff-no-rj',
               ),
-              const SizedBox(height: 16),
             ],
           )
         : SingleChildScrollView(
@@ -326,48 +311,42 @@ class _HomePageState extends State<HomePage> {
                 _buildBlogCard(
                   title: 'Understanding Flutter Widgets',
                   description: 'A deep dive into Flutter widgets.',
-                  imageUrl: 'https://yt3.googleusercontent.com/R7PTqrMUbUEYEJ4eYubESlWPcZnAqTcqfXTt-NU4S2F9M-kEcB39JSHW50JpMs6Hjy1WEVDX8w=s900-c-k-c0x00ffffff-no-rj',
+                  imageUrl: 'https://yt3.googleusercontent.com/R7PTqrMUbUEYEJ4eYubESlWPcZnAqTcqfXTt-NU4S2F9M-kEcB39JSHW50JpMs6Hjy1WEVDX8g=s900-c-k-c0x00ffffff-no-rj',
                 ),
-                const SizedBox(width: 16),
                 _buildBlogCard(
-                  title: 'State Management in Flutter',
-                  description: 'Different approaches to state management.',
-                  imageUrl: 'https://yt3.googleusercontent.com/R7PTqrMUbUEYEJ4eYubESlWPcZnAqTcqfXTt-NU4S2F9M-kEcB39JSHW50JpMs6Hjy1WEVDX8w=s900-c-k-c0x00ffffff-no-rj',
+                  title: 'Dart Language Features',
+                  description: 'Explore advanced features in Dart.',
+                  imageUrl: 'https://yt3.googleusercontent.com/ytc/AGIKgqN6xqM7ivEMD7Wl7EqgOwgp0uc4zwoFSaE73tXJRw=s900-c-k-c0x00ffffff-no-rj',
                 ),
-                const SizedBox(width: 16),
               ],
             ),
           );
   }
 
-  Widget _buildBlogCard({required String title, required String description, required String imageUrl}) {
+  Widget _buildBlogCard({
+    required String title,
+    required String description,
+    required String imageUrl,
+  }) {
     return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-            child: Image.network(imageUrl, width: 150, height: 100, fit: BoxFit.cover),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Container(
+        width: 280,
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(imageUrl, height: 150, width: double.infinity, fit: BoxFit.cover),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              description,
-              style: const TextStyle(fontSize: 14, color: Colors.black54),
-            ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 6),
+            Text(description, style: const TextStyle(fontSize: 16)),
+          ],
+        ),
       ),
     );
   }
@@ -377,17 +356,15 @@ class _HomePageState extends State<HomePage> {
         ? Column(
             children: [
               _buildProjectCard(
-                title: 'Farm Management System',
-                description: 'A comprehensive system for managing farm operations.',
-                imageUrl: 'https://yt3.googleusercontent.com/R7PTqrMUbUEYEJ4eYubESlWPcZnAqTcqfXTt-NU4S2F9M-kEcB39JSHW50JpMs6Hjy1WEVDX8w=s900-c-k-c0x00ffffff-no-rj',
+                title: 'Flutter E-Commerce App',
+                description: 'Building a complete e-commerce solution with Flutter.',
+                imageUrl: 'https://flutter.dev/images/flutter-logo-sharing.png',
               ),
-              const SizedBox(height: 16),
               _buildProjectCard(
-                title: 'Crop Monitoring App',
-                description: 'An app to monitor crop growth and health.',
-                imageUrl: 'https://yt3.googleusercontent.com/R7PTqrMUbUEYEJ4eYubESlWPcZnAqTcqfXTt-NU4S2F9M-kEcB39JSHW50JpMs6Hjy1WEVDX8w=s900-c-k-c0x00ffffff-no-rj',
+                title: 'Personal Portfolio Website',
+                description: 'A sleek, modern portfolio website for showcasing projects.',
+                imageUrl: 'https://miro.medium.com/v2/resize:fit:1200/1*rxhP2nsR5_wlA_g4mzjXMQ.jpeg',
               ),
-              const SizedBox(height: 16),
             ],
           )
         : SingleChildScrollView(
@@ -395,50 +372,74 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               children: [
                 _buildProjectCard(
-                  title: 'Farm Management System',
-                  description: 'A comprehensive system for managing farm operations.',
-                  imageUrl: 'https://yt3.googleusercontent.com/R7PTqrMUbUEYEJ4eYubESlWPcZnAqTcqfXTt-NU4S2F9M-kEcB39JSHW50JpMs6Hjy1WEVDX8w=s900-c-k-c0x00ffffff-no-rj',
+                  title: 'Flutter E-Commerce App',
+                  description: 'Building a complete e-commerce solution with Flutter.',
+                  imageUrl: 'https://flutter.dev/images/flutter-logo-sharing.png',
                 ),
-                const SizedBox(width: 16),
                 _buildProjectCard(
-                  title: 'Crop Monitoring App',
-                  description: 'An app to monitor crop growth and health.',
-                  imageUrl: 'https://yt3.googleusercontent.com/R7PTqrMUbUEYEJ4eYubESlWPcZnAqTcqfXTt-NU4S2F9M-kEcB39JSHW50JpMs6Hjy1WEVDX8w=s900-c-k-c0x00ffffff-no-rj',
+                  title: 'Personal Portfolio Website',
+                  description: 'A sleek, modern portfolio website for showcasing projects.',
+                  imageUrl: 'https://miro.medium.com/v2/resize:fit:1200/1*rxhP2nsR5_wlA_g4mzjXMQ.jpeg',
                 ),
-                const SizedBox(width: 16),
               ],
             ),
           );
   }
 
-  Widget _buildProjectCard({required String title, required String description, required String imageUrl}) {
+  Widget _buildProjectCard({
+    required String title,
+    required String description,
+    required String imageUrl,
+  }) {
     return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Container(
+        width: 280,
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(imageUrl, height: 150, width: double.infinity, fit: BoxFit.cover),
+            ),
+            const SizedBox(height: 12),
+            Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 6),
+            Text(description, style: const TextStyle(fontSize: 16)),
+          ],
+        ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-            child: Image.network(imageUrl, width: 150, height: 100, fit: BoxFit.cover),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              description,
-              style: const TextStyle(fontSize: 14, color: Colors.black54),
-            ),
-          ),
-        ],
+    );
+  }
+
+  Widget _buildFarmDetailCard(String title, String value, IconData icon) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
+        leading: Icon(icon, color: Colors.green, size: 40),
+        title: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        subtitle: Text(value, style: const TextStyle(fontSize: 16)),
+      ),
+    );
+  }
+
+  Widget _buildSwitchCard(String title, String subtitle) {
+    bool isEnabled = false;
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: SwitchListTile(
+        title: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        subtitle: Text(subtitle, style: const TextStyle(fontSize: 16)),
+        value: isEnabled,
+        onChanged: (bool value) {
+          setState(() {
+            isEnabled = value;
+          });
+        },
       ),
     );
   }
