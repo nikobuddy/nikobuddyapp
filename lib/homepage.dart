@@ -1,3 +1,4 @@
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -8,119 +9,82 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
+  int _currentIndex = 0;
+  late PageController _pageController;
 
-  // List of pages corresponding to each bottom navigation bar item
-  static const List<Widget> _pages = <Widget>[
-    DashboardPage(),
-    ProfilePage(),
-    SettingsPage(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Page'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: const Text('Nikobuddy'),
+        backgroundColor: Colors.yellow[700],
       ),
-      body: _pages[_selectedIndex], // Display the selected page
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped, // Switch between pages
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() => _currentIndex = index);
+        },
+        children: <Widget>[
+          Container(color: Colors.white, child: Center(child: Text('Home Page'))),
+          Container(color: Colors.white, child: Center(child: Text('Blogs Page'))),
+          Container(color: Colors.white, child: Center(child: Text('Projects Page'))),
+          Container(color: Colors.white, child: Center(child: Text('Farm Page'))),
+          Container(color: Colors.white, child: Center(child: Text('Profile Page'))),
+          // Removed the Settings Page to comply with the item limit
         ],
-        selectedItemColor: Colors.deepPurple, // Selected tab color
-        unselectedItemColor: Colors.grey, // Unselected tab color
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed, // Keeps all icons visible
       ),
-    );
-  }
-}
-
-// Dashboard Page UI
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.dashboard, size: 100, color: Colors.deepPurple),
-            SizedBox(height: 20),
-            Text('Welcome to the Dashboard!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Profile Page UI
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.person, size: 100, color: Colors.deepPurple),
-            SizedBox(height: 20),
-            Text('Your Profile',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Settings Page UI
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.settings, size: 100, color: Colors.deepPurple),
-            SizedBox(height: 20),
-            Text('Settings',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          ],
-        ),
+      bottomNavigationBar: BottomNavyBar(
+        selectedIndex: _currentIndex,
+        showElevation: true,
+        onItemSelected: (index) {
+          setState(() => _currentIndex = index);
+          _pageController.jumpToPage(index);
+        },
+        items: [
+          BottomNavyBarItem(
+            icon: Icon(Icons.home_filled, size: 30),
+            title: const Text('Home'),
+            activeColor: Colors.deepPurpleAccent,
+            inactiveColor: Colors.grey,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.article, size: 30),
+            title: const Text('Blogs'),
+            activeColor: Colors.orangeAccent,
+            inactiveColor: Colors.grey,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.work, size: 30),
+            title: const Text('Projects'),
+            activeColor: Colors.blueAccent,
+            inactiveColor: Colors.grey,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.agriculture, size: 30),
+            title: const Text('Farm'),
+            activeColor: Colors.greenAccent,
+            inactiveColor: Colors.grey,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.person, size: 30),
+            title: const Text('Profile'),
+            activeColor: Colors.redAccent,
+            inactiveColor: Colors.grey,
+          ),
+          // Removed the Settings item to comply with the item limit
+        ],
       ),
     );
   }
